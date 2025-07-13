@@ -43,6 +43,10 @@
       when: configure_oh_my_zsh
       tags: ['oh-my-zsh']
 
+    - import_tasks: tasks/stats.yml
+      when: configure_stats
+      tags: ['stats']
+
     - name: Set wallpaper
       shell: |
         osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"{{ wallpaper_path }}\""

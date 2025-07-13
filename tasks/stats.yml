@@ -1,0 +1,18 @@
+---
+- name: Copy over stats.plist
+  copy:
+    src: files/stats.plist
+    dest: /Users/monty/Library/Preferences/org.exelban.Stats.plist
+    mode: '0600'
+    owner: monty
+    group: staff
+  register: copy_stats_plist
+
+- name: Restart stats if the config file was changed
+  shell: killall Stats
+  when: copy_stats_plist.changed
+
+- name: Restart stats if the config file was changed
+  shell: open -a Stats
+  when: copy_stats_plist.changed
+

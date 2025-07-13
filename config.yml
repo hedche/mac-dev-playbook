@@ -3,6 +3,7 @@ configure_dotfiles: true
 configure_terminal: true
 configure_osx: true
 configure_oh_my_zsh: true
+configure_stats: true
 
 wallpaper_path: "/Users/monty/dv/mac-dev-playbook/files/IMG_1950.jpeg"
 
@@ -18,6 +19,9 @@ dockitems_remove:
   - Freeform
   - FaceTime
   - Music
+  - Maps
+  - Safari
+
 dockitems_persist:
   - name: "Arc"
     path: "/Applications/Arc.app/"
