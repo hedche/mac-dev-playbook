@@ -2,6 +2,7 @@
 configure_dotfiles: true
 configure_terminal: true
 configure_osx: true
+configure_oh_my_zsh: true
 
 # Set to 'true' to configure the Dock via dockutil.
 configure_dock: true
@@ -13,11 +14,24 @@ dockitems_remove:
   - 'iPhone Mirroring'
   - Contacts
   - Freeform
+  - FaceTime
   - Music
-dockitems_persist: []
+dockitems_persist:
   - name: "Arc"
     path: "/Applications/Arc.app/"
     pos: 5
+  - name: "Code"
+    path: "/Applications/Visual Studio Code.app/"
+    pos: 6
+  - name: "ChatGPT"
+    path: "/Applications/ChatGPT.app/"
+    pos: 7
+  - name: "WhatsApp"
+    path: "/Applications/WhatsApp.app/"
+    pos: 9
+  - name: "Bitwarden"
+    path: "/Applications/Bitwarden.app/"
+    pos: 10
 
 configure_sudoers: false
 sudoers_custom_config: ""
@@ -26,7 +40,7 @@ sudoers_custom_config: ""
 #   # Allow users in admin group to use sudo with no password.
 #   %admin ALL=(ALL) NOPASSWD: ALL
 
-dotfiles_repo: https://github.com/hedche/dot-files.git
+dotfiles_repo: git@github.com:hedche/dot-files.git
 dotfiles_repo_accept_hostkey: true
 dotfiles_repo_local_destination: ~/dv/dot-files
 dotfiles_repo_version: master # Replace with your default branch
@@ -51,6 +65,8 @@ homebrew_installed_packages:
   - wget
   - htop
   - zsh-history-substring-search
+  - ffmpeg
+  - neovim
 
 homebrew_taps: []
 
@@ -63,6 +79,9 @@ homebrew_cask_apps:
   - raycast
   - visual-studio-code
   - vlc
+  - whatsapp
+  - stats
+  - bitwarden
 
 # See `geerlingguy.mac.mas` role documentation for usage instructions.
 mas_installed_apps: []

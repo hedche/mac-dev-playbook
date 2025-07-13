@@ -39,6 +39,10 @@
       when: configure_osx
       tags: ['osx']
 
+    - import_tasks: tasks/oh-my-zsh.yml
+      when: configure_oh_my_zsh
+      tags: ['oh-my-zsh']
+
     - import_tasks: tasks/extra-packages.yml
       tags: ['extra-packages']
 

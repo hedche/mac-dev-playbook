@@ -1,0 +1,12 @@
+---
+- name: Install Oh My Zsh
+  ansible.builtin.shell: |
+    RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  args:
+    executable: /bin/zsh
+  environment:
+    ZSH: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: oh_my_install
+  changed_when: "'The $ZSH folder already exists' not in oh_my_install.stdout"
+  failed_when: "'The $ZSH folder already exists' not in oh_my_install.stdout and oh_my_install.rc != 0"
+
