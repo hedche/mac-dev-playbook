@@ -4,6 +4,8 @@ configure_terminal: true
 configure_osx: true
 configure_oh_my_zsh: true
 
+wallpaper_path: "/Users/monty/dv/mac-dev-playbook/files/IMG_1950.jpeg"
+
 # Set to 'true' to configure the Dock via dockutil.
 configure_dock: true
 dockitems_remove:
@@ -82,6 +84,7 @@ homebrew_cask_apps:
   - whatsapp
   - stats
   - bitwarden
+  - transmission
 
 # See `geerlingguy.mac.mas` role documentation for usage instructions.
 mas_installed_apps: []
