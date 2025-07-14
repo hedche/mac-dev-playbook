@@ -11,6 +11,7 @@
 - name: Restart stats if the config file was changed
   shell: killall Stats
   when: copy_stats_plist.changed
+  ignore_errors: true
 
 - name: Restart stats if the config file was changed
   shell: open -a Stats

@@ -80,6 +80,7 @@ homebrew_installed_packages:
   - zsh-history-substring-search
   - ffmpeg
   - neovim
+  - defaultbrowser
 
 homebrew_taps: []
 
