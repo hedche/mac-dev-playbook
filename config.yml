@@ -21,23 +21,30 @@ dockitems_remove:
   - Music
   - Maps
   - Safari
+  - Messages
+  - Mail
+  - Photos
+  - Calendar
+  - 'System Settings'
+  - Notes
+  - Reminders
 
 dockitems_persist:
   - name: "Arc"
     path: "/Applications/Arc.app/"
-    pos: 5
-  - name: "Code"
+    pos: 2
+  - name: "Terminal"
+    path: "/Applications/Utilities/Terminal.app/"
+    pos: 3
+  - name: "Visual Studio Code"
     path: "/Applications/Visual Studio Code.app/"
-    pos: 6
+    pos: 4
   - name: "ChatGPT"
     path: "/Applications/ChatGPT.app/"
-    pos: 7
+    pos: 5
   - name: "WhatsApp"
     path: "/Applications/WhatsApp.app/"
-    pos: 9
-  - name: "Bitwarden"
-    path: "/Applications/Bitwarden.app/"
-    pos: 10
+    pos: 6
 
 configure_sudoers: false
 sudoers_custom_config: ""
