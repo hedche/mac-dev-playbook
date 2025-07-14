@@ -47,6 +47,10 @@
       when: configure_stats
       tags: ['stats']
 
+    - name: Set deafult browser to be Arc
+      shell: defaultbrowser browser
+      ignore_errors: true
+
     - name: Set wallpaper
       shell: |
         osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"{{ wallpaper_path }}\""
