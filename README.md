@@ -20,7 +20,7 @@ pip3 install ansible
 ```
   3. Clone or download this repository
 ```
-cd $HOME && mkdir dv && git clone git@github.com:hedche/mac-dev-playbook.git && cd mac-dev-playbook
+cd $HOME && mkdir dv && cd dv && git clone git@github.com:hedche/mac-dev-playbook.git && cd mac-dev-playbook
 ```
 
   4. Install Ansible Galaxy requirements
