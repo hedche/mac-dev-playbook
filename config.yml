@@ -4,6 +4,7 @@ configure_terminal: true
 configure_osx: true
 configure_oh_my_zsh: true
 configure_stats: true
+git_clone: false
 
 wallpaper_path: "/Users/monty/dv/mac-dev-playbook/files/IMG_1950.jpeg"
 
@@ -53,6 +54,15 @@ sudoers_custom_config: ""
 #   # Allow users in admin group to use sudo with no password.
 #   %admin ALL=(ALL) NOPASSWD: ALL
 
+# GitHub
+github_root_dir: ~/dv/
+github_repos:
+  - git@github.com:hedche/server-building-dashboard.git
+  - git@github.com:hedche/about-me.git
+  - git@github.com:hedche/devops-cheatsheet.git
+  - git@github.com:hedche/check-ping-shutdown.git
+
+# dotfiles
 dotfiles_repo: git@github.com:hedche/dot-files.git
 dotfiles_repo_accept_hostkey: true
 dotfiles_repo_local_destination: ~/dv/dot-files

@@ -1,0 +1,8 @@
+---
+- name: Clone repos to ~/dv/
+  become: false
+  git:
+    repo: "{{ item }}"
+    dest: "{{ github_root_dir }}/{{ item | basename | regex_replace('\\.git$', '') }}"
+  when: git_clone|default(false)|bool
+  loop: "{{ github_repos }}"

@@ -47,6 +47,10 @@
       when: configure_stats
       tags: ['stats']
 
+    - import_tasks: tasks/git.yml
+      when: git_clone
+      tags: ['git-clone']
+
     - name: Set deafult browser to be Arc
       shell: defaultbrowser browser
       ignore_errors: true
