@@ -4,7 +4,7 @@ configure_terminal: true
 configure_osx: true
 configure_oh_my_zsh: true
 configure_stats: true
-git_clone: false
+git_clone: true
 
 wallpaper_path: "/Users/monty/dv/mac-dev-playbook/files/IMG_1950.jpeg"
 
@@ -91,6 +91,7 @@ homebrew_installed_packages:
   - ffmpeg
   - neovim
   - defaultbrowser
+  - tmux
 
 homebrew_taps: []
 
