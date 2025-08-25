@@ -92,6 +92,7 @@ homebrew_installed_packages:
   - neovim
   - defaultbrowser
   - tmux
+  - yt-dlp
 
 homebrew_taps: []
 
