@@ -93,6 +93,8 @@ homebrew_installed_packages:
   - defaultbrowser
   - tmux
   - yt-dlp
+  - tesseract
+  - ollama
 
 homebrew_taps: []
 
