@@ -95,6 +95,7 @@ homebrew_installed_packages:
   - yt-dlp
   - tesseract
   - ollama
+  - terraform
 
 homebrew_taps: []
 
