@@ -96,6 +96,7 @@ homebrew_installed_packages:
   - tesseract
   - ollama
   - terraform
+  - bat
 
 homebrew_taps: []
 
