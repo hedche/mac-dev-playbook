@@ -96,7 +96,8 @@ homebrew_installed_packages:
   - tesseract
   - ollama
   - terraform
-  - bat
+  - watch
+  - oci-cli
 
 homebrew_taps: []
 
@@ -113,6 +114,7 @@ homebrew_cask_apps:
   - stats
   - bitwarden
   - transmission
+  - google-chrome
 
 # See `geerlingguy.mac.mas` role documentation for usage instructions.
 mas_installed_apps: []
