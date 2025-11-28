@@ -98,6 +98,7 @@ homebrew_installed_packages:
   - terraform
   - watch
   - oci-cli
+  - gh
 
 homebrew_taps: []
 
