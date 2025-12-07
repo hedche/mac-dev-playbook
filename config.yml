@@ -99,6 +99,7 @@ homebrew_installed_packages:
   - watch
   - oci-cli
   - gh
+  - tree
 
 homebrew_taps: []
 
@@ -116,6 +117,7 @@ homebrew_cask_apps:
   - bitwarden
   - transmission
   - google-chrome
+  - microsoft-teams
 
 # See `geerlingguy.mac.mas` role documentation for usage instructions.
 mas_installed_apps: []
