@@ -57,7 +57,6 @@ sudoers_custom_config: ""
 # GitHub
 github_root_dir: ~/dv/
 github_repos:
-  - git@github.com:hedche/server-building-dashboard.git
   - git@github.com:hedche/about-me.git
   - git@github.com:hedche/devops-cheatsheet.git
   - git@github.com:hedche/check-ping-shutdown.git
@@ -100,7 +99,6 @@ homebrew_installed_packages:
   - oci-cli
   - gh
   - tree
-  - gcloud
 
 homebrew_taps: []
 
@@ -119,6 +117,7 @@ homebrew_cask_apps:
   - transmission
   - google-chrome
   - microsoft-teams
+  - ghostty
 
 # See `geerlingguy.mac.mas` role documentation for usage instructions.
 mas_installed_apps: []
