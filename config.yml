@@ -99,6 +99,7 @@ homebrew_installed_packages:
   - oci-cli
   - gh
   - tree
+  - tailscale
 
 homebrew_taps: []
 
