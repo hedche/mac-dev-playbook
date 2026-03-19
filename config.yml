@@ -103,6 +103,7 @@ homebrew_installed_packages:
   - gh
   - talosctl
   - direnv
+  - k9s
 
 homebrew_taps: []
 
