@@ -104,8 +104,11 @@ homebrew_installed_packages:
   - talosctl
   - direnv
   - k9s
+  - fluxcd/tap/flux
+  - kubeseal
 
-homebrew_taps: []
+homebrew_taps:
+  - fluxcd/tap
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
