@@ -12,6 +12,27 @@
         - "{{ playbook_dir }}/config.yml"
       tags: ['always']
 
+    - name: Remove stale Docker Desktop symlinks from previous installs.
+      become: true
+      shell: |
+        for dir in \
+          /usr/local/bin \
+          /usr/local/cli-plugins \
+          /usr/local/lib/docker/cli-plugins \
+          /opt/homebrew/bin \
+          /opt/homebrew/cli-plugins \
+          /opt/homebrew/lib/docker/cli-plugins
+        do
+          [ -d "${dir}" ] || continue
+          find "${dir}" -maxdepth 1 -type l \
+            \( -lname '/Applications/Docker.app' -o -lname '/Applications/Docker.app/*' \) \
+            -print -delete
+        done
+      register: stale_docker_desktop_symlinks
+      changed_when: stale_docker_desktop_symlinks.stdout != ""
+      when: "'docker-desktop' in homebrew_cask_apps"
+      tags: ['homebrew']
+
   roles:
     - role: elliotweiser.osx-command-line-tools
     - role: geerlingguy.mac.homebrew
