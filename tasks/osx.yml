@@ -1,7 +1,7 @@
 ---
 - name: Set persmissions
   file:
-    path: /Users/monty/dv/dot-files/.osx
+    path: "{{ ansible_env.HOME }}/dv/dot-files/.osx"
     mode: '0755'
     state: file
 

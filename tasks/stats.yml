@@ -2,9 +2,9 @@
 - name: Copy over stats.plist
   copy:
     src: files/stats.plist
-    dest: /Users/monty/Library/Preferences/org.exelban.Stats.plist
+    dest: "{{ ansible_env.HOME }}/Library/Preferences/org.exelban.Stats.plist"
     mode: '0600'
-    owner: monty
+    owner: "{{ ansible_user_id }}"
     group: staff
   register: copy_stats_plist
 
@@ -16,4 +16,3 @@
 - name: Restart stats if the config file was changed
   shell: open -a Stats
   when: copy_stats_plist.changed
-
