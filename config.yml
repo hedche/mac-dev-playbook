@@ -112,8 +112,7 @@ homebrew_taps:
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
-  # docker-desktop cask is managed by the app's built-in auto-updater
-  # Homebrew's API is currently serving a broken cask definition for it
+  - docker-desktop
   - nordvpn
   - arc
   - chatgpt

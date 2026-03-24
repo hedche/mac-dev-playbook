@@ -66,7 +66,7 @@ homebrew_taps: []
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
   - chromedriver
-  - docker
+  - docker-desktop
   - dropbox
   - firefox
   - google-chrome
