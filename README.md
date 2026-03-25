@@ -34,7 +34,7 @@ This repository is tailored to the local setup and is not fully generic as-is.
 - The default config clones dotfiles from `git@github.com:hedche/dot-files.git`.
 - The dotfiles are expected at `~/dv/dot-files`.
 - User-specific paths have been converted to `HOME`-relative Ansible variables where possible.
-- The default wallpaper path is repo-relative: `{{ playbook_dir }}/files/IMG_1950.jpeg`.
+- The default wallpaper path is repo-relative: `{{ playbook_dir }}/files/background.jpeg`.
 
 If you are using this on another machine or username, review `config.yml` and the files under `tasks/` before running the playbook.
 

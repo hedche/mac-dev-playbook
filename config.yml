@@ -6,7 +6,7 @@ configure_oh_my_zsh: true
 configure_stats: true
 git_clone: true
 
-wallpaper_path: "{{ playbook_dir }}/files/IMG_1950.jpeg"
+wallpaper_path: "{{ playbook_dir }}/files/background.jpeg"
 
 # Set to 'true' to configure the Dock via dockutil.
 configure_dock: true
