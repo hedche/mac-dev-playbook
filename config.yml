@@ -106,6 +106,7 @@ homebrew_installed_packages:
   - k9s
   - fluxcd/tap/flux@2.6
   - kubeseal
+  - fastlane
 
 homebrew_taps:
   - fluxcd/tap
