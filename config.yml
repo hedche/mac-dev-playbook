@@ -34,8 +34,8 @@ dockitems_persist:
   - name: "Arc"
     path: "/Applications/Arc.app/"
     pos: 2
-  - name: "Terminal"
-    path: "/Applications/Utilities/Terminal.app/"
+  - name: "Ghostty"
+    path: "/Applications/Ghostty.app/"
     pos: 3
   - name: "Visual Studio Code"
     path: "/Applications/Visual Studio Code.app/"
