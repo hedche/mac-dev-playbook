@@ -2,6 +2,22 @@
 
 This Ansible playbook includes tasks to restore Raycast configuration on a new Mac.
 
+## Research-Backed Implementation (2024-2025)
+
+This implementation follows the current best practices confirmed by community research:
+
+**Key Research Findings:**
+- **`.rayconfig` format**: Gzipped, AES-256-CBC encrypted JSON file containing all settings
+- **Password required**: Raycast now mandates password encryption (no unencrypted option as of 2024)
+- **Deep links available**: `raycast://extensions/raycast/raycast/import-settings-data` triggers import
+- **No headless automation**: GUI interaction required for passphrase entry
+- **Community pattern**: Store `.rayconfig` in dotfiles repo, manual import on new machine
+
+**References:**
+- [micahkepe/dotfiles](https://github.com/micahkepe/dotfiles) - Stores `Raycast.rayconfig` at repo root
+- [jeremy-code's gist](https://gist.github.com/jeremy-code/50117d5b4f29e04fcbbb1f55e301b893) - Documents the encryption/decryption process
+- [Raycast Manual](https://manual.raycast.com/preferences) - Official export/import documentation
+
 ## How It Works
 
 Raycast's free plan doesn't include cloud sync (Pro feature). This solution uses:

@@ -11,6 +11,11 @@
     mode: '0755'
   when: raycast_app.stat.exists
 
+- name: Check if Raycast plist source exists
+  stat:
+    path: "{{ playbook_dir }}/files/raycast/com.raycast.macos.plist"
+  register: raycast_plist_source
+
 - name: Copy Raycast preferences plist
   copy:
     src: "{{ playbook_dir }}/files/raycast/com.raycast.macos.plist"
@@ -19,6 +24,7 @@
   register: copy_raycast_plist
   when: 
     - raycast_app.stat.exists
+    - raycast_plist_source.stat.exists | default(false)
     - raycast_plist_file | default(false)
 
 - name: Restart Raycast if plist was changed
