@@ -1,0 +1,68 @@
+---
+- name: Check if Raycast is installed
+  stat:
+    path: "/Applications/Raycast.app"
+  register: raycast_app
+
+- name: Ensure Raycast config directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.config/raycast"
+    state: directory
+    mode: '0755'
+  when: raycast_app.stat.exists
+
+- name: Copy Raycast preferences plist
+  copy:
+    src: "{{ playbook_dir }}/files/raycast/com.raycast.macos.plist"
+    dest: "{{ ansible_env.HOME }}/Library/Preferences/com.raycast.macos.plist"
+    mode: '0600'
+  register: copy_raycast_plist
+  when: 
+    - raycast_app.stat.exists
+    - raycast_plist_file | default(false)
+
+- name: Restart Raycast if plist was changed
+  shell: killall Raycast
+  when: copy_raycast_plist.changed
+  ignore_errors: true
+
+- name: Check if .rayconfig export exists
+  stat:
+    path: "{{ playbook_dir }}/files/raycast/raycast.rayconfig"
+  register: raycast_export_file
+
+- name: Alert user about manual import step
+  debug:
+    msg: |
+      ═══════════════════════════════════════════════════════════════
+      RAYCAST SETUP REQUIRED
+      ═══════════════════════════════════════════════════════════════
+      
+      A raycast.rayconfig export file was found in your dotfiles.
+      
+      To complete Raycast setup:
+      1. Open Raycast
+      2. Run command: "Import Settings & Data"
+      3. Select: {{ playbook_dir }}/files/raycast/raycast.rayconfig
+      4. Enter your export passphrase when prompted
+      
+      This will restore: extensions, quicklinks, snippets, hotkeys
+      ═══════════════════════════════════════════════════════════════
+  when: raycast_export_file.stat.exists
+
+- name: Check if dotfiles Raycast directory exists
+  stat:
+    path: "{{ dotfiles_repo_local_destination }}/raycast/scripts"
+  register: dotfiles_raycast_dir
+
+- name: Copy Raycast custom scripts from dotfiles
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.config/raycast/"
+    mode: '0755'
+  with_fileglob:
+    - "{{ dotfiles_repo_local_destination }}/raycast/scripts/*"
+  when:
+    - raycast_app.stat.exists
+    - raycast_custom_scripts | default(false)
+    - dotfiles_raycast_dir.stat.exists

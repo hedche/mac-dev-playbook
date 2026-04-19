@@ -4,6 +4,9 @@ configure_terminal: true
 configure_osx: true
 configure_oh_my_zsh: true
 configure_stats: true
+configure_raycast: true
+raycast_custom_scripts: true
+raycast_plist_file: true
 git_clone: true
 
 wallpaper_path: "{{ playbook_dir }}/files/background.jpeg"

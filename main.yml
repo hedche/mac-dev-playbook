@@ -68,6 +68,10 @@
       when: configure_stats
       tags: ['stats']
 
+    - import_tasks: tasks/raycast.yml
+      when: configure_raycast
+      tags: ['raycast']
+
     - import_tasks: tasks/git.yml
       when: git_clone
       tags: ['git-clone']

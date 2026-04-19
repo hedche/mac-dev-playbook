@@ -2,6 +2,11 @@
 configure_dotfiles: true
 configure_terminal: true
 configure_osx: true
+configure_raycast: false
+
+# Raycast configuration
+raycast_custom_scripts: false
+raycast_plist_file: false
 
 # Set to 'true' to configure the Dock via dockutil.
 configure_dock: false
