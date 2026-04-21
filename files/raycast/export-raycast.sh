@@ -29,6 +29,9 @@ else
     echo "⚠ Raycast plist not found at expected location"
 fi
 
+# Remove any old rayconfig files
+rm -f "$DOTFILES_RAYCAST_DIR"/*.rayconfig
+
 # Guide for .rayconfig export
 echo ""
 echo "═══════════════════════════════════════════════════════════════"
@@ -37,14 +40,20 @@ echo "════════════════════════�
 echo ""
 echo "1. Open Raycast"
 echo "2. Run: 'Export Settings & Data'"
-echo "3. Save the file to: $DOTFILES_RAYCAST_DIR/raycast.rayconfig"
+echo "3. Save the file to: $DOTFILES_RAYCAST_DIR/"
+echo "   Note: Raycast will add a timestamp to the filename"
 echo "4. Set a passphrase you'll remember (or note it securely)"
 echo ""
 echo "Press Enter when you've completed the export..."
 read
 
-if [ -f "$DOTFILES_RAYCAST_DIR/raycast.rayconfig" ]; then
-    echo "✓ .rayconfig found"
+# Find the most recent rayconfig file
+RAYCONFIG_FILE=$(ls -t "$DOTFILES_RAYCAST_DIR"/*.rayconfig 2>/dev/null | head -1)
+
+if [ -f "$RAYCONFIG_FILE" ]; then
+    # Rename to standard filename
+    mv "$RAYCONFIG_FILE" "$DOTFILES_RAYCAST_DIR/raycast.rayconfig"
+    echo "✓ .rayconfig found and renamed to: raycast.rayconfig"
     echo ""
     echo "═══════════════════════════════════════════════════════════════"
     echo "Files ready for git commit:"
@@ -58,6 +67,5 @@ if [ -f "$DOTFILES_RAYCAST_DIR/raycast.rayconfig" ]; then
     echo "  git push"
 else
     echo ""
-    echo "⚠ .rayconfig not found at expected location"
-    echo "   Expected: $DOTFILES_RAYCAST_DIR/raycast.rayconfig"
+    echo "⚠ .rayconfig file not found in: $DOTFILES_RAYCAST_DIR/"
 fi
