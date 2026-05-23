@@ -3,6 +3,7 @@ configure_dotfiles: true
 configure_terminal: true
 configure_osx: true
 configure_raycast: false
+configure_ssh_server: false
 
 # Raycast configuration
 raycast_custom_scripts: false

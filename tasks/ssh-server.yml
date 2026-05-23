@@ -1,0 +1,16 @@
+---
+- name: Enable Remote Login (SSH)
+  ansible.builtin.command: systemsetup -f -setremotelogin on
+  become: true
+  changed_when: true
+
+- name: Check if Remote Login is enabled
+  ansible.builtin.command: systemsetup -getremotelogin
+  become: true
+  register: remote_login_status
+  changed_when: false
+  check_mode: false
+
+- name: Debug Remote Login status
+  ansible.builtin.debug:
+    msg: "Remote Login status: {{ remote_login_status.stdout }}"
