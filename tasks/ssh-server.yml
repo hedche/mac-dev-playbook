@@ -1,0 +1,26 @@
+---
+- name: Check if Remote Login is already enabled
+  ansible.builtin.command: systemsetup -getremotelogin
+  become: true
+  register: remote_login_status
+  changed_when: false
+  check_mode: false
+  ignore_errors: true
+
+- name: Enable Remote Login (SSH)
+  ansible.builtin.command: systemsetup -f -setremotelogin on
+  become: true
+  when: remote_login_status.rc == 0 and 'On' not in remote_login_status.stdout
+
+- name: Warn if Remote Login cannot be enabled automatically
+  ansible.builtin.debug:
+    msg: |
+      Remote Login (SSH) could not be enabled automatically.
+      macOS requires Full Disk Access for systemsetup commands.
+      To enable Remote Login manually:
+        1. System Settings -> General -> Sharing -> Remote Login -> On
+      Or grant Full Disk Access to your terminal app:
+        1. System Settings -> Privacy & Security -> Full Disk Access
+        2. Add Terminal (or your terminal emulator)
+        3. Re-run the playbook
+  when: remote_login_status.rc != 0

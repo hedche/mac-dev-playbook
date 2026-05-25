@@ -72,6 +72,10 @@
       when: configure_raycast
       tags: ['raycast']
 
+    - import_tasks: tasks/ssh-server.yml
+      when: configure_ssh_server
+      tags: ['ssh-server']
+
     - import_tasks: tasks/git.yml
       when: git_clone
       tags: ['git-clone']
