@@ -113,6 +113,7 @@ homebrew_installed_packages:
   - fastlane
   - pnpm
   - firebase-cli
+  - age
 
 homebrew_taps:
   - fluxcd/tap
