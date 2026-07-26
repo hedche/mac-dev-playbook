@@ -1,0 +1,28 @@
+---
+# Docker Desktop installs its CLI binaries inside the app bundle and only
+# symlinks them into /usr/local/bin when the user grants it privileged access
+# from the GUI. A Homebrew cask install never triggers that prompt, so `docker`
+# ends up off PATH. Create the same symlinks here so the CLI works for every
+# shell and for GUI apps, not just the ones that source ~/.zshrc.
+- name: Check whether Docker Desktop is installed.
+  stat:
+    path: "{{ docker_desktop_bin_dir }}"
+  register: docker_desktop_bin
+
+- name: Ensure /usr/local/bin exists for Docker Desktop symlinks.
+  become: true
+  file:
+    path: /usr/local/bin
+    state: directory
+    mode: '0755'
+  when: docker_desktop_bin.stat.isdir is defined and docker_desktop_bin.stat.isdir
+
+- name: Symlink Docker Desktop CLI binaries into /usr/local/bin.
+  become: true
+  file:
+    src: "{{ docker_desktop_bin_dir }}/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: true
+  loop: "{{ docker_desktop_symlinks }}"
+  when: docker_desktop_bin.stat.isdir is defined and docker_desktop_bin.stat.isdir

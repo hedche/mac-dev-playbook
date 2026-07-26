@@ -12,8 +12,11 @@
         - "{{ playbook_dir }}/config.yml"
       tags: ['always']
 
-    - name: Remove stale Docker Desktop symlinks from previous installs.
+    - name: Remove broken Docker Desktop symlinks from previous installs.
       become: true
+      # Only dangling links are removed: those are what break the Homebrew cask
+      # install. Working links pointing into the current Docker.app are managed
+      # by tasks/docker.yml and must survive.
       shell: |
         for dir in \
           /usr/local/bin \
@@ -26,6 +29,7 @@
           [ -d "${dir}" ] || continue
           find "${dir}" -maxdepth 1 -type l \
             \( -lname '/Applications/Docker.app' -o -lname '/Applications/Docker.app/*' \) \
+            ! -exec test -e {} \; \
             -print -delete
         done
       register: stale_docker_desktop_symlinks
@@ -71,6 +75,10 @@
     - import_tasks: tasks/raycast.yml
       when: configure_raycast
       tags: ['raycast']
+
+    - import_tasks: tasks/docker.yml
+      when: configure_docker
+      tags: ['docker']
 
     - import_tasks: tasks/git.yml
       when: git_clone

@@ -193,6 +193,28 @@ When `configure_dock` is enabled, the playbook removes a set of default macOS ap
 - ChatGPT
 - WhatsApp
 
+## Docker Desktop CLI
+
+Docker Desktop keeps its CLI binaries inside the app bundle and only symlinks
+them into `/usr/local/bin` when you grant it privileged access from the GUI. A
+Homebrew cask install never triggers that prompt, so `docker` ends up missing
+from `PATH` entirely.
+
+When `configure_docker` is enabled, `tasks/docker.yml` creates those symlinks
+itself, which makes the CLI available to every shell and to GUI apps rather
+than only to shells that source `~/.zshrc`. Configure it with:
+
+- `docker_desktop_bin_dir` — where the bundled binaries live
+- `docker_desktop_symlinks` — which binaries to link
+
+`kubectl` also ships in the bundle but is deliberately left out, so the Homebrew
+`kubernetes-cli` version stays authoritative.
+
+The dotfiles repo covers the same ground from the shell side: `.zshrc` appends
+`$HOME/.docker/bin` (Docker Desktop 4.18+) and the bundle's `bin` to `PATH` if
+they exist. The two are complementary — the symlinks need sudo and cover
+everything, the `PATH` entries need no privileges and cover interactive zsh.
+
 ## Supported tags
 
 You can run a subset of the playbook with Ansible tags. Tags currently used in this repo include:
@@ -206,6 +228,7 @@ You can run a subset of the playbook with Ansible tags. Tags currently used in t
 - `osx`
 - `oh-my-zsh`
 - `stats`
+- `docker`
 - `git-clone`
 - `extra-packages`
 - `post`

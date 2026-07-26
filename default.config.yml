@@ -82,6 +82,18 @@ homebrew_cask_apps:
   - sublime-text
   - transmit
 
+# Set to 'true' to symlink the Docker Desktop CLI into /usr/local/bin, which
+# Docker Desktop itself only does when granted privileged access from the GUI.
+configure_docker: true
+docker_desktop_bin_dir: /Applications/Docker.app/Contents/Resources/bin
+# kubectl also ships in the bundle but is deliberately not linked here, so the
+# Homebrew `kubernetes-cli` version stays authoritative.
+docker_desktop_symlinks:
+  - docker
+  - docker-credential-desktop
+  - docker-credential-ecr-login
+  - docker-credential-osxkeychain
+
 # See `geerlingguy.mac.mas` role documentation for usage instructions.
 mas_installed_apps: []
 mas_email: ""
