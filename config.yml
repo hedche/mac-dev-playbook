@@ -104,7 +104,6 @@ homebrew_installed_packages:
   - gh
   - tree
   - tailscale
-  - gh
   - talosctl
   - direnv
   - k9s
