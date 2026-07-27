@@ -153,6 +153,7 @@ You can disable dotfile management by setting `configure_dotfiles: false`.
 - k9s
 - `fluxcd/tap/flux@2.6`
 - kubeseal
+- jq
 
 ### Homebrew taps
 
@@ -215,6 +216,60 @@ The dotfiles repo covers the same ground from the shell side: `.zshrc` appends
 they exist. The two are complementary — the symlinks need sudo and cover
 everything, the `PATH` entries need no privileges and cover interactive zsh.
 
+## tmux session persistence
+
+When `configure_tmux` is enabled, `tasks/tmux.yml` sets up tmux so your sessions
+survive a reboot — names, windows, pane layouts, working directories, and the
+Claude Code conversations that were running in them.
+
+The stack is the standard one: [tpm](https://github.com/tmux-plugins/tpm) +
+[tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) (serialises the
+environment to `~/.tmux/resurrect`) +
+[tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) (saves every 5
+minutes, restores when the tmux server starts). Config lives in the dotfiles
+repo as `.tmux.conf`.
+
+Two deliberate departures from the usual advice:
+
+**Boot is handled by a LaunchAgent, not `@continuum-boot`.** Continuum's own boot
+option opens a GUI terminal window at login and only supports
+Terminal.app/iTerm2/kitty/Alacritty — not Ghostty. Instead
+`~/Library/LaunchAgents/uk.leafbit.tmux-server.plist` runs `boot-tmux.sh`, which
+starts a *headless* server; by the time you open a terminal and run `tmux a` the
+sessions are already back. Logs go to `~/Library/Logs/tmux-boot.log`.
+
+**Claude Code panes are tracked by hooks, not process detection.** Claude's
+`pane_current_command` reports its version string (e.g. `2.1.220`) rather than
+`claude`, so the `ps`-based detection used by third-party plugins does not find
+it. Instead a `SessionStart` hook records the session ID against `$TMUX_PANE`,
+resurrect's post-save hook resolves that to stable `session:window.pane`
+coordinates, and the post-restore hook types `claude --resume <id>` into the
+matching pane. **The command is typed but not executed** — after a reboot you
+may have a dozen of them, so you press Enter on the ones you actually want. A
+`SessionEnd` hook drops conversations you deliberately ended.
+
+Scripts live in the dotfiles repo under `tmux/` and are symlinked into
+`~/.tmux/scripts/`. The Claude hooks are merged into `~/.claude/settings.json`.
+
+### Recovering a bad save
+
+Continuum can overwrite a good save with a near-empty one if it fires while the
+server is nearly empty. Resurrect keeps every save, so point `last` at an older
+one and restore with `prefix + Ctrl-r`:
+
+```sh
+ls -t ~/.tmux/resurrect/tmux_resurrect_*.txt | head
+ln -sf tmux_resurrect_<timestamp>.txt ~/.tmux/resurrect/last
+```
+
+### Limitations
+
+- Claude returns with full conversation history, but any in-flight request at
+  reboot is lost.
+- A restored pane is only offered a resume if it is sitting at an idle shell.
+- Conversations already running when the hooks were first installed are not
+  recorded until their next start or resume.
+
 ## Supported tags
 
 You can run a subset of the playbook with Ansible tags. Tags currently used in this repo include:
@@ -229,6 +284,7 @@ You can run a subset of the playbook with Ansible tags. Tags currently used in t
 - `oh-my-zsh`
 - `stats`
 - `docker`
+- `tmux`
 - `git-clone`
 - `extra-packages`
 - `post`

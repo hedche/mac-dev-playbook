@@ -21,6 +21,10 @@ dockitems_persist: []
 #   pos: 5
 
 configure_sudoers: false
+
+# Set to 'true' to install the tmux persistence stack (tpm + resurrect +
+# continuum) and a LaunchAgent that restores your sessions after a reboot.
+configure_tmux: false
 sudoers_custom_config: ""
 # Example:
 # sudoers_custom_config: |

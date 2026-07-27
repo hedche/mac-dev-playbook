@@ -6,6 +6,7 @@ configure_oh_my_zsh: true
 configure_stats: true
 configure_raycast: true
 configure_docker: true
+configure_tmux: true
 raycast_custom_scripts: true
 raycast_plist_file: true
 git_clone: true
@@ -77,6 +78,7 @@ dotfiles_files:
   - .inputrc
   - .osx
   - .vimrc
+  - .tmux.conf
 
 homebrew_installed_packages:
   - autoconf
@@ -115,6 +117,7 @@ homebrew_installed_packages:
   - firebase-cli
   - age
   - yq
+  - jq # required by the tmux Claude session hooks (macOS ships one, but don't rely on it)
 
 homebrew_taps:
   - fluxcd/tap

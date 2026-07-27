@@ -80,6 +80,10 @@
       when: configure_docker
       tags: ['docker']
 
+    - import_tasks: tasks/tmux.yml
+      when: configure_tmux
+      tags: ['tmux']
+
     - import_tasks: tasks/git.yml
       when: git_clone
       tags: ['git-clone']

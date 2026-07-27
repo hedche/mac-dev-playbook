@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Managed by mac-dev-playbook (tasks/tmux.yml). Do not edit by hand. -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>uk.leafbit.tmux-server</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>{{ ansible_env.HOME }}/.tmux/scripts/boot-tmux.sh</string>
+    </array>
+
+    <!-- Start a headless tmux server at login so continuum restores the last
+         saved environment before you open a terminal. -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- One-shot. boot-tmux.sh exits once the server is up; the tmux server
+         itself daemonises and is not launchd's to supervise. -->
+    <key>KeepAlive</key>
+    <false/>
+
+    <!-- launchd does not inherit your shell PATH, so tmux and its dependencies
+         must be findable here. This is the usual reason these agents silently
+         do nothing. -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>{{ tmux_homebrew_prefix }}/bin:{{ tmux_homebrew_prefix }}/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>HOME</key>
+        <string>{{ ansible_env.HOME }}</string>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>{{ ansible_env.HOME }}/Library/Logs/tmux-boot.log</string>
+    <key>StandardErrorPath</key>
+    <string>{{ ansible_env.HOME }}/Library/Logs/tmux-boot.log</string>
+</dict>
+</plist>

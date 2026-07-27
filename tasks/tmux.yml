@@ -1,0 +1,143 @@
+---
+# tmux session persistence: tpm + tmux-resurrect + tmux-continuum, plus hooks
+# that let Claude Code conversations be resumed in the pane they belonged to.
+#
+# The config (.tmux.conf) is symlinked by the geerlingguy.dotfiles role; this
+# file installs the plugin manager, the helper scripts, the Claude Code hooks
+# and the LaunchAgent that starts tmux headlessly at login.
+
+- name: Configure tmux session persistence
+  # Everything here is user-level state. ansible.cfg sets become=true globally,
+  # so without this the files land owned by root and tmux cannot write them.
+  become: false
+  vars:
+    tmux_home: "{{ ansible_env.HOME }}/.tmux"
+    tmux_dotfiles_dir: "{{ dotfiles_repo_local_destination | expanduser }}/tmux"
+    tmux_state_dir: "{{ ansible_env.HOME }}/.local/state/tmux-claude/panes"
+    tmux_claude_settings: "{{ ansible_env.HOME }}/.claude/settings.json"
+    tmux_launchagent: "{{ ansible_env.HOME }}/Library/LaunchAgents/uk.leafbit.tmux-server.plist"
+    tmux_homebrew_prefix: >-
+      {{ homebrew_prefix
+         | default((ansible_machine == 'arm64') | ternary('/opt/homebrew', '/usr/local'), true) }}
+  block:
+
+    - name: Ensure tmux directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ tmux_home }}/plugins"
+        - "{{ tmux_home }}/scripts"
+        - "{{ tmux_home }}/resurrect"
+        - "{{ tmux_state_dir }}"
+        - "{{ ansible_env.HOME }}/Library/LaunchAgents"
+
+    - name: Install tpm (tmux plugin manager)
+      git:
+        repo: https://github.com/tmux-plugins/tpm.git
+        dest: "{{ tmux_home }}/plugins/tpm"
+        version: master
+        # Pinned to whatever was first cloned: tpm is infrastructure, and a
+        # surprise upstream change should not ride in on an unrelated run.
+        update: false
+
+    - name: Check that the tmux helper scripts are present in the dotfiles repo
+      stat:
+        path: "{{ tmux_dotfiles_dir }}"
+      register: tmux_dotfiles_scripts
+
+    - name: Symlink tmux helper scripts from dotfiles
+      file:
+        src: "{{ item }}"
+        dest: "{{ tmux_home }}/scripts/{{ item | basename }}"
+        state: link
+        force: true
+      with_fileglob:
+        - "{{ tmux_dotfiles_dir }}/*.sh"
+      when: tmux_dotfiles_scripts.stat.exists
+
+    - name: Ensure tmux helper scripts are executable
+      file:
+        path: "{{ item }}"
+        mode: '0755'
+      with_fileglob:
+        - "{{ tmux_dotfiles_dir }}/*.sh"
+      when: tmux_dotfiles_scripts.stat.exists
+
+    # install_plugins reads TMUX_PLUGIN_MANAGER_PATH from a running tmux server,
+    # which only gets set once that server has sourced a .tmux.conf containing
+    # tpm. A server started before this config existed has not, so source it
+    # first -- and stand up a throwaway server if none is running at all.
+    - name: Install tmux plugins
+      shell: |
+        set -e
+        created_server=0
+        if ! tmux list-sessions >/dev/null 2>&1; then
+          tmux new-session -d -s _tpm_install
+          created_server=1
+        fi
+        tmux source-file "{{ ansible_env.HOME }}/.tmux.conf"
+        "{{ tmux_home }}/plugins/tpm/bin/install_plugins"
+        [ "$created_server" -eq 1 ] && tmux kill-session -t _tpm_install
+        exit 0
+      args:
+        creates: "{{ tmux_home }}/plugins/tmux-continuum"
+
+    # ---------------------------------------------------------------------
+    # Claude Code hooks
+    # ---------------------------------------------------------------------
+    - name: Ensure the Claude Code config directory exists
+      file:
+        path: "{{ ansible_env.HOME }}/.claude"
+        state: directory
+        mode: '0755'
+
+    - name: Check for an existing Claude Code settings file
+      stat:
+        path: "{{ tmux_claude_settings }}"
+      register: tmux_claude_settings_file
+
+    - name: Register the tmux session hooks in Claude Code settings
+      copy:
+        # Merged, not overwritten: any other settings you have are preserved.
+        # Note recursive combine replaces whole lists, so this does claim the
+        # SessionStart and SessionEnd keys outright -- other hook events are
+        # untouched, but additional SessionStart hooks belong in these scripts.
+        content: "{{ existing | combine(hooks, recursive=True) | to_nice_json }}\n"
+        dest: "{{ tmux_claude_settings }}"
+        mode: '0644'
+      vars:
+        existing: >-
+          {{ (lookup('file', tmux_claude_settings) | from_json)
+             if tmux_claude_settings_file.stat.exists else {} }}
+        hooks:
+          hooks:
+            SessionStart:
+              - hooks:
+                  - type: command
+                    command: "{{ tmux_home }}/scripts/claude-session-record.sh"
+                    timeout: 10
+            SessionEnd:
+              - hooks:
+                  - type: command
+                    command: "{{ tmux_home }}/scripts/claude-session-forget.sh"
+                    timeout: 10
+
+    # ---------------------------------------------------------------------
+    # Headless start at login
+    # ---------------------------------------------------------------------
+    - name: Install the tmux server LaunchAgent
+      template:
+        src: "{{ playbook_dir }}/templates/uk.leafbit.tmux-server.plist.j2"
+        dest: "{{ tmux_launchagent }}"
+        mode: '0644'
+      register: tmux_launchagent_plist
+
+    - name: Reload the tmux server LaunchAgent
+      # bootout first so re-runs pick up a changed plist; it fails harmlessly
+      # when the agent was not loaded, hence the `|| true`.
+      shell: |
+        launchctl bootout "gui/$(id -u)/uk.leafbit.tmux-server" 2>/dev/null || true
+        launchctl bootstrap "gui/$(id -u)" "{{ tmux_launchagent }}"
+      when: tmux_launchagent_plist.changed
