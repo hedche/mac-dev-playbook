@@ -115,6 +115,7 @@ homebrew_installed_packages:
   - pnpm
   - firebase-cli
   - age
+  - yq
 
 homebrew_taps:
   - fluxcd/tap
