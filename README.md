@@ -23,6 +23,9 @@ The playbook currently wires together:
   - macOS defaults via `.osx`
   - Oh My Zsh installation
   - Stats app preferences
+  - Raycast configuration
+  - Docker Desktop CLI symlinks
+  - tmux session persistence
   - cloning personal GitHub repositories
   - extra Composer / npm / pip / gem packages
   - optional post-provision task files
@@ -88,111 +91,63 @@ If Homebrew-related steps fail, run `brew doctor` and resolve any Xcode or Homeb
 
 `default.config.yml` contains the upstream-style defaults. This fork's actual local defaults live in `config.yml`.
 
-Notable settings in `config.yml`:
+Each optional area of the playbook is gated behind a `configure_*` flag. They all
+default to `false` in `default.config.yml`; `config.yml` is where this machine
+turns them on. To see what is currently enabled:
 
-- `configure_dotfiles: true`
-- `configure_terminal: true`
-- `configure_osx: true`
-- `configure_oh_my_zsh: true`
-- `configure_stats: true`
-- `configure_dock: true`
-- `git_clone: true`
+```sh
+grep -E '^(configure_|git_clone)' config.yml
+```
 
-You can override any of these values in `config.yml`.
+The flags map to the task files of the same name — `configure_tmux` gates
+`tasks/tmux.yml`, and so on. See `main.yml` for the full wiring.
 
 ## Dotfiles
 
-This fork uses the following dotfiles repository:
+Dotfiles are cloned from a separate repository and symlinked into the home
+directory by the `geerlingguy.dotfiles` role. The repo, branch, local
+destination and the list of files to link are all set in `config.yml`:
 
-- repo: `git@github.com:hedche/dot-files.git`
-- local destination: `~/dv/dot-files`
-- branch: `master`
+```sh
+grep -A20 '^dotfiles_repo:' config.yml
+```
 
-The playbook installs these files from that repo into the current user's home directory:
-
-- `.zshrc`
-- `.gitignore`
-- `.gitconfig`
-- `.inputrc`
-- `.osx`
-- `.vimrc`
-
-You can disable dotfile management by setting `configure_dotfiles: false`.
+Adding a dotfile is a two-step job: commit it to the dotfiles repo, then add its
+path to `dotfiles_files`. Nested paths work — the role creates parent
+directories. Disable the whole thing with `configure_dotfiles: false`.
 
 ## Default software in this fork
 
-### Homebrew packages
+**`config.yml` is the single source of truth.** This README deliberately does
+not repeat the lists, so that adding or removing software is a one-file change:
 
-- autoconf
-- bash-completion
-- git
-- iperf
-- nmap
-- node
-- ssh-copy-id
-- openssl
-- pv
-- wget
-- htop
-- zsh-history-substring-search
-- ffmpeg
-- neovim
-- defaultbrowser
-- tmux
-- yt-dlp
-- tesseract
-- ollama
-- terraform
-- watch
-- oci-cli
-- gh
-- tree
-- tailscale
-- talosctl
-- direnv
-- k9s
-- `fluxcd/tap/flux@2.6`
-- kubeseal
-- jq
+| What | Variable in `config.yml` |
+| --- | --- |
+| Homebrew formulae | `homebrew_installed_packages` |
+| Homebrew taps | `homebrew_taps` |
+| Homebrew casks | `homebrew_cask_apps` |
+| Mac App Store apps | `mas_installed_apps` |
+| Composer / gem / npm / pip packages | `composer_packages`, `gem_packages`, `npm_packages`, `pip_packages` |
+| Repos cloned into `~/dv/` | `github_repos` (root: `github_root_dir`) |
+| Dock items added / removed | `dockitems_persist`, `dockitems_remove` |
 
-### Homebrew taps
+To see what a given run will install:
 
-- `fluxcd/tap`
+```sh
+# everything, resolved
+ansible-playbook main.yml --tags homebrew --check --diff
 
-### Homebrew cask apps
+# or just read the list
+yq '.homebrew_installed_packages' config.yml
+```
 
-- docker-desktop
-- nordvpn
-- arc
-- chatgpt
-- raycast
-- visual-studio-code
-- vlc
-- whatsapp
-- stats
-- bitwarden
-- transmission
-- google-chrome
-- microsoft-teams
-- ghostty
+A handful of packages exist to support the playbook itself rather than for
+day-to-day use, and should not be removed without checking what depends on
+them:
 
-### Git repositories cloned by default
-
-Into `~/dv/`:
-
-- `git@github.com:hedche/about-me.git`
-- `git@github.com:hedche/devops-cheatsheet.git`
-- `git@github.com:hedche/check-ping-shutdown.git`
-
-## Dock setup
-
-When `configure_dock` is enabled, the playbook removes a set of default macOS apps from the Dock and persists:
-
-- Arc
-- Terminal
-- Visual Studio Code
-- ChatGPT
-- WhatsApp
+- `jq` — parses the Claude Code hook payloads in `tasks/tmux.yml`
+- `tmux` — see [tmux session persistence](#tmux-session-persistence)
+- `defaultbrowser` — used by the "Set default browser" task in `main.yml`
 
 ## Docker Desktop CLI
 
@@ -272,22 +227,12 @@ ln -sf tmux_resurrect_<timestamp>.txt ~/.tmux/resurrect/last
 
 ## Supported tags
 
-You can run a subset of the playbook with Ansible tags. Tags currently used in this repo include:
+You can run a subset of the playbook with Ansible tags. Rather than listing them
+here, ask the playbook itself — this is always accurate:
 
-- `dotfiles`
-- `homebrew`
-- `mas`
-- `dock`
-- `sudoers`
-- `terminal`
-- `osx`
-- `oh-my-zsh`
-- `stats`
-- `docker`
-- `tmux`
-- `git-clone`
-- `extra-packages`
-- `post`
+```sh
+ansible-playbook main.yml --list-tags
+```
 
 Example:
 
