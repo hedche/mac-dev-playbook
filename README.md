@@ -198,10 +198,23 @@ sessions are already back. Logs go to `~/Library/Logs/tmux-boot.log`.
 `claude`, so the `ps`-based detection used by third-party plugins does not find
 it. Instead a `SessionStart` hook records the session ID against `$TMUX_PANE`,
 resurrect's post-save hook resolves that to stable `session:window.pane`
-coordinates, and the post-restore hook types `claude --resume <id>` into the
-matching pane. **The command is typed but not executed** — after a reboot you
-may have a dozen of them, so you press Enter on the ones you actually want. A
+coordinates, and the post-restore hook resumes each conversation in its pane. A
 `SessionEnd` hook drops conversations you deliberately ended.
+
+**Conversations resume a few at a time.** After a reboot there may be a dozen or
+more, so `claude-resume-queue.sh` works through them in the background: most
+recently active first, at most two starting at once, and a slot frees only when
+that Claude is actually up (its `SessionStart` hook has fired). Before each
+launch it holds while the load average is at or above the core count or macOS
+reports memory pressure, for up to three minutes. A session that exits during
+startup is retried once; one still starting after 90 seconds is probably sitting
+at a prompt, so it is flagged rather than typed into again.
+
+While it runs the tmux status line shows `claude 7/16`, and a macOS notification
+summarises the result. Every step is logged to `~/Library/Logs/claude-resume.log`.
+To retry, run `~/.tmux/scripts/claude-resume-queue.sh` — panes not at an idle
+shell are skipped. `CLAUDE_RESUME_PARALLEL`, `CLAUDE_RESUME_TIMEOUT` and
+`CLAUDE_RESUME_GATE_MAX` override the defaults.
 
 Scripts live in the dotfiles repo under `tmux/` and are symlinked into
 `~/.tmux/scripts/`. The Claude hooks are merged into `~/.claude/settings.json`.
@@ -221,7 +234,7 @@ ln -sf tmux_resurrect_<timestamp>.txt ~/.tmux/resurrect/last
 
 - Claude returns with full conversation history, but any in-flight request at
   reboot is lost.
-- A restored pane is only offered a resume if it is sitting at an idle shell.
+- A conversation is only resumed into a pane that is sitting at an idle shell.
 - Conversations already running when the hooks were first installed are not
   recorded until their next start or resume.
 
