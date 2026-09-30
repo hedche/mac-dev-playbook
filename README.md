@@ -114,7 +114,9 @@ grep -A20 '^dotfiles_repo:' config.yml
 
 Adding a dotfile is a two-step job: commit it to the dotfiles repo, then add its
 path to `dotfiles_files`. Nested paths work — the role creates parent
-directories. Disable the whole thing with `configure_dotfiles: false`.
+directories — `.claude/CLAUDE.md` is one, giving every local Claude Code
+session the same global instructions. Disable the whole thing with
+`configure_dotfiles: false`.
 
 ## Default software in this fork
 

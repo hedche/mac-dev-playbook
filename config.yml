@@ -79,6 +79,7 @@ dotfiles_files:
   - .osx
   - .vimrc
   - .tmux.conf
+  - .claude/CLAUDE.md # global Claude Code instructions, applies to every session
 
 homebrew_installed_packages:
   - autoconf
