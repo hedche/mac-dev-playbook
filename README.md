@@ -237,6 +237,8 @@ ln -sf tmux_resurrect_<timestamp>.txt ~/.tmux/resurrect/last
 - Claude returns with full conversation history, but any in-flight request at
   reboot is lost.
 - A conversation is only resumed into a pane that is sitting at an idle shell.
+- A conversation still waiting in the resume queue is left out of saves until it
+  is up, so a second reboot during the queue can forget it.
 - Conversations already running when the hooks were first installed are not
   recorded until their next start or resume.
 
