@@ -4,6 +4,7 @@ configure_terminal: true
 configure_osx: true
 configure_oh_my_zsh: true
 configure_stats: true
+configure_ice: true
 configure_raycast: true
 configure_docker: true
 configure_tmux: true
@@ -134,6 +135,7 @@ homebrew_cask_apps:
   - vlc
   - whatsapp
   - stats
+  - jordanbaird-ice
   - bitwarden
   - transmission
   - google-chrome

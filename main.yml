@@ -72,6 +72,10 @@
       when: configure_stats
       tags: ['stats']
 
+    - import_tasks: tasks/ice.yml
+      when: configure_ice
+      tags: ['ice']
+
     - import_tasks: tasks/raycast.yml
       when: configure_raycast
       tags: ['raycast']

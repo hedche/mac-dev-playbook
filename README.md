@@ -23,6 +23,7 @@ The playbook currently wires together:
   - macOS defaults via `.osx`
   - Oh My Zsh installation
   - Stats app preferences
+  - Ice (menu bar manager) preferences, restored from `files/ice.plist` when present
   - Raycast configuration
   - Docker Desktop CLI symlinks
   - tmux session persistence

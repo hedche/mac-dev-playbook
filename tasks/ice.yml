@@ -1,0 +1,20 @@
+---
+# Back up after configuring Ice:
+#   defaults export com.jordanbaird.Ice files/ice.plist
+- name: Check for a saved Ice config
+  stat:
+    path: "{{ playbook_dir }}/files/ice.plist"
+  register: ice_plist
+
+- name: Quit Ice before importing its config
+  shell: killall Ice
+  when: ice_plist.stat.exists
+  ignore_errors: true
+
+- name: Import Ice preferences
+  shell: defaults import com.jordanbaird.Ice "{{ playbook_dir }}/files/ice.plist"
+  when: ice_plist.stat.exists
+
+- name: Launch Ice
+  shell: open -a Ice
+  ignore_errors: true
