@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bundle metadata for "tmux boot.app" (tasks/tmux.yml). -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>uk.leafbit.tmux-boot</string>
+    <key>CFBundleName</key>
+    <string>tmux boot</string>
+    <key>CFBundleExecutable</key>
+    <string>tmux-boot</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <!-- No Dock icon, no menu bar: it only holds the tmux server. -->
+    <key>LSUIElement</key>
+    <true/>
+    <!-- Shown in the one-time Local Network prompt. -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Lets tmux sessions (kubectl, talosctl, Claude Code) reach machines on the home LAN.</string>
+</dict>
+</plist>

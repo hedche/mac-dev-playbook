@@ -16,6 +16,7 @@
     tmux_state_dir: "{{ ansible_env.HOME }}/.local/state/tmux-claude/panes"
     tmux_claude_settings: "{{ ansible_env.HOME }}/.claude/settings.json"
     tmux_launchagent: "{{ ansible_env.HOME }}/Library/LaunchAgents/uk.leafbit.tmux-server.plist"
+    tmux_boot_app: "{{ ansible_env.HOME }}/Applications/tmux boot.app"
     tmux_homebrew_prefix: >-
       {{ homebrew_prefix
          | default((ansible_machine == 'arm64') | ternary('/opt/homebrew', '/usr/local'), true) }}
@@ -127,6 +128,47 @@
     # ---------------------------------------------------------------------
     # Headless start at login
     # ---------------------------------------------------------------------
+    # macOS grants Local Network access per app, and a tmux server started
+    # straight by launchd belongs to none, so LAN addresses fail with "no route
+    # to host" inside it. The LaunchAgent opens this app instead; switch it on
+    # once under Privacy & Security -> Local Network. Takes effect the next time
+    # the tmux server starts (login, or after `tmux kill-server`).
+    - name: Create the tmux boot app bundle
+      file:
+        path: "{{ tmux_boot_app }}/Contents/{{ item }}"
+        state: directory
+        mode: '0755'
+      loop: [MacOS, Resources]
+
+    - name: Install the tmux boot app Info.plist
+      copy:
+        src: "{{ playbook_dir }}/files/tmux-boot/Info.plist"
+        dest: "{{ tmux_boot_app }}/Contents/Info.plist"
+        mode: '0644'
+      register: tmux_boot_plist
+
+    # The source is kept next to the binary so a changed main.c triggers a
+    # rebuild and an unchanged one does not.
+    - name: Install the tmux boot app source
+      copy:
+        src: "{{ playbook_dir }}/files/tmux-boot/main.c"
+        dest: "{{ tmux_boot_app }}/Contents/Resources/main.c"
+        mode: '0644'
+      register: tmux_boot_source
+
+    - name: Build the tmux boot app executable
+      command: >-
+        /usr/bin/clang -O2 -Wall -o "{{ tmux_boot_app }}/Contents/MacOS/tmux-boot"
+        "{{ tmux_boot_app }}/Contents/Resources/main.c"
+      when: tmux_boot_source.changed
+      register: tmux_boot_build
+
+    # Ad-hoc signature: enough for macOS to give the bundle its own identity in
+    # Privacy & Security. Re-signing changes nothing the toggle is keyed on.
+    - name: Sign the tmux boot app
+      command: /usr/bin/codesign --force --sign - "{{ tmux_boot_app }}"
+      when: tmux_boot_plist.changed or tmux_boot_build.changed
+
     - name: Install the tmux server LaunchAgent
       template:
         src: "{{ playbook_dir }}/templates/uk.leafbit.tmux-server.plist.j2"
