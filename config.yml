@@ -37,8 +37,8 @@ dockitems_remove:
   - Reminders
 
 dockitems_persist:
-  - name: "Arc"
-    path: "/Applications/Arc.app/"
+  - name: "Dia"
+    path: "/Applications/Dia.app/"
     pos: 2
   - name: "Ghostty"
     path: "/Applications/Ghostty.app/"
@@ -128,7 +128,7 @@ homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
   - docker-desktop
   - nordvpn
-  - arc
+  - thebrowsercompany-dia
   - chatgpt
   - raycast
   - visual-studio-code

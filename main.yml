@@ -92,9 +92,10 @@
       when: git_clone
       tags: ['git-clone']
 
-    - name: Set deafult browser to be Arc
-      shell: defaultbrowser browser
+    - name: Set default browser to be Dia
+      shell: defaultbrowser dia
       ignore_errors: true
+      tags: ['browser']
 
     - name: Set wallpaper
       shell: |
