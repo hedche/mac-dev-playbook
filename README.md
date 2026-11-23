@@ -296,7 +296,7 @@ GitHub Actions currently runs:
 ## Notes
 
 - `full-mac-setup.md` is still present in the repo, but it remains largely upstream/personal historical documentation and should not be treated as an exact description of this fork.
-- The playbook sets Arc as the default browser by calling `defaultbrowser browser`.
+- The playbook sets Dia as the default browser by calling `defaultbrowser dia` (macOS asks you to confirm the change).
 - The playbook applies the wallpaper only when `wallpaper_path` is defined.
 
 [badge-gh-actions]: https://github.com/hedche/mac-dev-playbook/actions/workflows/ci.yml/badge.svg
