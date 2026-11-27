@@ -124,6 +124,9 @@ homebrew_installed_packages:
 homebrew_taps:
   - fluxcd/tap
 
+homebrew_cask_uninstalled_apps:
+  - arc # shut down by The Browser Company on 22 Dec 2026; replaced by Dia
+
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
   - docker-desktop
