@@ -6,9 +6,22 @@
     <key>Label</key>
     <string>uk.leafbit.tmux-server</string>
 
+    <!-- Opened through LaunchServices rather than run directly, so the tmux
+         server belongs to "tmux boot.app" and gets that app's Local Network
+         permission (see files/tmux-boot/main.c). open does not pass launchd's
+         environment on, hence the explicit --env. -->
     <key>ProgramArguments</key>
     <array>
-        <string>{{ ansible_env.HOME }}/.tmux/scripts/boot-tmux.sh</string>
+        <string>/usr/bin/open</string>
+        <string>-g</string>
+        <string>-a</string>
+        <string>{{ tmux_boot_app }}</string>
+        <string>--env</string>
+        <string>PATH={{ tmux_homebrew_prefix }}/bin:{{ tmux_homebrew_prefix }}/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <string>--stdout</string>
+        <string>{{ ansible_env.HOME }}/Library/Logs/tmux-boot.log</string>
+        <string>--stderr</string>
+        <string>{{ ansible_env.HOME }}/Library/Logs/tmux-boot.log</string>
     </array>
 
     <!-- Start a headless tmux server at login so continuum restores the last
@@ -16,8 +29,8 @@
     <key>RunAtLoad</key>
     <true/>
 
-    <!-- One-shot. boot-tmux.sh exits once the server is up; the tmux server
-         itself daemonises and is not launchd's to supervise. -->
+    <!-- One-shot. open returns at once; the app stays up alongside the tmux
+         server, which daemonises and is not launchd's to supervise. -->
     <key>KeepAlive</key>
     <false/>
 
